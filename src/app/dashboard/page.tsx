@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { tunnelsAPI, Tunnel } from '@/lib/api';
 import { Plus, Globe, Activity, Trash2, ExternalLink, RefreshCw } from 'lucide-react';
 
+const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || 'localhost:8080';
+
 export default function DashboardPage() {
   const [tunnels, setTunnels] = useState<Tunnel[]>([]);
   const [loading, setLoading] = useState(true);
@@ -157,7 +159,7 @@ export default function DashboardPage() {
                     <div className="text-sm text-gray-600 space-y-1">
                       <div className="flex items-center gap-2">
                         <ExternalLink size={16} />
-                        <span>http://{tunnel.subdomain}.localhost:8080</span>
+                        <span>http://{tunnel.subdomain}.{DOMAIN}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Activity size={16} />
@@ -294,7 +296,7 @@ function CreateTunnelModal({ onClose, onCreate }: CreateTunnelModalProps) {
                 maxLength={63}
               />
               <span className="px-3 py-2 bg-gray-100 border border-l-0 border-gray-300 rounded-r-md text-gray-600">
-                .localhost:8080
+                .{DOMAIN}
               </span>
             </div>
             {subdomainError && (
@@ -341,4 +343,5 @@ function CreateTunnelModal({ onClose, onCreate }: CreateTunnelModalProps) {
     </div>
   );
 }
+
 

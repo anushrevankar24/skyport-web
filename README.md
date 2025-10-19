@@ -37,12 +37,14 @@ Edit `.env.local`:
 
 ```env
 NEXT_PUBLIC_API_URL=https://your-api-domain.com/api/v1
+NEXT_PUBLIC_DOMAIN=your-domain.com
 ```
 
 For local development, use:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8080/api/v1
+NEXT_PUBLIC_DOMAIN=localhost:8080
 ```
 
 ### 3. Development
@@ -74,6 +76,7 @@ npm start
 2. Import the project in Vercel
 3. Configure environment variables:
    - `NEXT_PUBLIC_API_URL`: Your SkyPort Server API URL
+   - `NEXT_PUBLIC_DOMAIN`: Your domain (e.g., skyports.tech)
 4. Deploy!
 
 Vercel will automatically detect the Next.js configuration and deploy your app.
@@ -112,6 +115,7 @@ skyport-web/
 | Variable | Description | Required | Default |
 |----------|-------------|----------|---------|
 | `NEXT_PUBLIC_API_URL` | SkyPort Server API endpoint | Yes | `http://localhost:8080/api/v1` |
+| `NEXT_PUBLIC_DOMAIN` | Domain for tunnel URLs (e.g., skyports.tech) | Yes | `localhost:8080` |
 
 ## Tech Stack
 
