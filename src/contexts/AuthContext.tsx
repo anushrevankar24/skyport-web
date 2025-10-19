@@ -7,7 +7,7 @@ import { authAPI, User } from '@/lib/api';
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
@@ -26,6 +26,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const checkAuthStatus = async () => {
     try {
       const token = Cookies.get('token');
+      
       if (token) {
         const userData = await authAPI.getProfile();
         setUser(userData);
@@ -44,12 +45,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await authAPI.login({ email, password });
       
-      // Store tokens and user data
-      Cookies.set('token', response.token, { expires: 1 }); // 1 day
-      Cookies.set('refreshToken', response.refresh_token, { expires: 7 }); // 7 days
-      Cookies.set('user', JSON.stringify(response.user), { expires: 7 });
+      // Store tokens and user data with explicit cookie options
+      const cookieOptions = { 
+        expires: 1, // 1 day
+        sameSite: 'lax' as const,
+        path: '/',
+        secure: false // Allow on localhost HTTP
+      };
+      const longCookieOptions = {
+        expires: 7, // 7 days
+        sameSite: 'lax' as const,
+        path: '/',
+        secure: false // Allow on localhost HTTP
+      };
       
+      Cookies.set('token', response.token, cookieOptions);
+      Cookies.set('refreshToken', response.refresh_token, longCookieOptions);
+      Cookies.set('user', JSON.stringify(response.user), longCookieOptions);
+      
+      // Update user state
       setUser(response.user);
+      
+      return response.user;
     } catch (error) {
       const errorMessage = error instanceof Error && 'response' in error 
         ? (error as { response?: { data?: { error?: string } } }).response?.data?.error 
@@ -62,10 +79,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await authAPI.signup({ name, email, password });
       
-      // Store tokens and user data
-      Cookies.set('token', response.token, { expires: 1 }); // 1 day
-      Cookies.set('refreshToken', response.refresh_token, { expires: 7 }); // 7 days
-      Cookies.set('user', JSON.stringify(response.user), { expires: 7 });
+      // Store tokens and user data with explicit cookie options
+      const cookieOptions = { 
+        expires: 1, // 1 day
+        sameSite: 'lax' as const,
+        path: '/',
+        secure: false // Allow on localhost HTTP
+      };
+      const longCookieOptions = {
+        expires: 7, // 7 days
+        sameSite: 'lax' as const,
+        path: '/',
+        secure: false // Allow on localhost HTTP
+      };
+      
+      Cookies.set('token', response.token, cookieOptions);
+      Cookies.set('refreshToken', response.refresh_token, longCookieOptions);
+      Cookies.set('user', JSON.stringify(response.user), longCookieOptions);
       
       setUser(response.user);
     } catch (error) {
@@ -77,9 +107,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
-    Cookies.remove('token');
-    Cookies.remove('refreshToken');
-    Cookies.remove('user');
+    Cookies.remove('token', { path: '/' });
+    Cookies.remove('refreshToken', { path: '/' });
+    Cookies.remove('user', { path: '/' });
     setUser(null);
   };
 

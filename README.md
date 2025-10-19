@@ -4,11 +4,11 @@ Modern web interface for SkyPort tunnel management built with Next.js 15, React 
 
 ## Features
 
-- 🔐 User authentication with JWT
-- 🚇 Tunnel management dashboard
-- 🔄 Real-time tunnel status
-- 📱 Responsive design with Tailwind CSS
-- 🚀 Agent authentication flow
+- User authentication with JWT
+- Tunnel management dashboard
+- Real-time tunnel status
+- Responsive design with Tailwind CSS
+- Agent authentication flow
 
 ## Prerequisites
 

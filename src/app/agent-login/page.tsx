@@ -11,7 +11,7 @@ function AgentLoginContent() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
-  const { login, logout } = useAuth();
+  const { login, logout, user, isAuthenticated } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callback');
@@ -20,7 +20,8 @@ function AgentLoginContent() {
   useEffect(() => {
     // Force logout to ensure clean state for agent authentication
     logout();
-  }, [logout]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,21 +29,20 @@ function AgentLoginContent() {
     setLoading(true);
 
     try {
-      await login(email, password);
+      const user = await login(email, password);
       
-      // After successful login, redirect to agent auth confirmation
-      if (callbackUrl) {
-        router.push(`/agent-auth-confirm?callback=${encodeURIComponent(callbackUrl)}&email=${encodeURIComponent(email)}`);
-      } else {
-        router.push('/dashboard');
-      }
+      const redirectUrl = callbackUrl 
+        ? `/agent-auth-confirm?callback=${encodeURIComponent(callbackUrl)}&email=${encodeURIComponent(email)}`
+        : '/dashboard';
+      
+      // Use window.location.href for full page reload to ensure cookies are properly loaded
+      window.location.href = redirectUrl;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
       setLoading(false);
     }
   };
-
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
