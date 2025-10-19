@@ -223,9 +223,31 @@ function CreateTunnelModal({ onClose, onCreate }: CreateTunnelModalProps) {
   const [subdomain, setSubdomain] = useState('');
   const [localPort, setLocalPort] = useState(3000);
   const [loading, setLoading] = useState(false);
+  const [subdomainError, setSubdomainError] = useState<string | null>(null);
+
+  const handleSubdomainChange = (value: string) => {
+    // Convert to lowercase and remove invalid characters
+    const cleanValue = value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+    setSubdomain(cleanValue);
+    
+    // Clear error when user starts typing
+    if (subdomainError) {
+      setSubdomainError(null);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate subdomain before submission
+    const { validateSubdomain } = await import('@/lib/validation');
+    const validation = validateSubdomain(subdomain);
+    
+    if (!validation.isValid) {
+      setSubdomainError(validation.error || 'Invalid subdomain');
+      return;
+    }
+    
     setLoading(true);
     try {
       await onCreate(name, subdomain, localPort);
@@ -263,14 +285,24 @@ function CreateTunnelModal({ onClose, onCreate }: CreateTunnelModalProps) {
                 type="text"
                 required
                 value={subdomain}
-                onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-900"
+                onChange={(e) => handleSubdomainChange(e.target.value)}
+                className={`flex-1 px-3 py-2 border rounded-l-md focus:outline-none focus:ring-indigo-500 bg-white text-gray-900 ${
+                  subdomainError ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-indigo-500'
+                }`}
                 placeholder="myapp"
+                minLength={3}
+                maxLength={63}
               />
               <span className="px-3 py-2 bg-gray-100 border border-l-0 border-gray-300 rounded-r-md text-gray-600">
                 .localhost:8080
               </span>
             </div>
+            {subdomainError && (
+              <p className="mt-1 text-sm text-red-600">{subdomainError}</p>
+            )}
+            <p className="mt-1 text-xs text-gray-500">
+              Use lowercase letters, numbers, and hyphens only (3-63 characters)
+            </p>
           </div>
           
           <div>
