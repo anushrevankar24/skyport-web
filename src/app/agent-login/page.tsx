@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
 
@@ -11,8 +11,7 @@ function AgentLoginContent() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
-  const { login, logout, user, isAuthenticated } = useAuth();
-  const router = useRouter();
+  const { login, logout } = useAuth();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callback');
 
@@ -29,7 +28,7 @@ function AgentLoginContent() {
     setLoading(true);
 
     try {
-      const user = await login(email, password);
+      await login(email, password);
       
       const redirectUrl = callbackUrl 
         ? `/agent-auth-confirm?callback=${encodeURIComponent(callbackUrl)}&email=${encodeURIComponent(email)}`
