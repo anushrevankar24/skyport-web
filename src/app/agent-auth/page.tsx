@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Cookies from 'js-cookie';
 
-export default function AgentAuthPage() {
+function AgentAuthContent() {
   const [authSuccess, setAuthSuccess] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -19,48 +19,71 @@ export default function AgentAuthPage() {
     const redirect = searchParams.get('redirect');
     const callbackUrl = searchParams.get('callback');
     
+    const handleAgentAuthInternal = async () => {
+      // For agent auth, we just need to confirm the user is logged in
+      // and redirect back to agent with the auth token
+      if (isAuthenticated) {
+        const token = Cookies.get('token');
+        if (token) {
+          // Redirect back to agent with success
+          window.location.href = `skyport://auth?success=true&token=${token}`;
+          setAuthSuccess(true);
+        } else {
+          setError('No valid authentication token found');
+        }
+      } else {
+        setError('Please log in first');
+      }
+      setLoading(false);
+    };
+
+    const handleWebLoginCallbackInternal = () => {
+      if (isAuthenticated) {
+        setAuthSuccess(true);
+        // Close this window/tab after a short delay
+        setTimeout(() => {
+          window.close();
+        }, 2000);
+      }
+      setLoading(false);
+    };
+
+    const initiateAgentLoginInternal = () => {
+      // Check if there's a callback URL for agent
+      const callbackUrl = searchParams.get('callback');
+      
+      if (!isAuthenticated) {
+        // Store callback URL and redirect to login
+        const loginUrl = callbackUrl 
+          ? `/login?callback=${encodeURIComponent(callbackUrl)}`
+          : '/login';
+        window.location.href = loginUrl;
+      } else {
+        // Already authenticated, handle the callback
+        const authToken = Cookies.get('token');
+        if (authToken && callbackUrl) {
+          // Redirect back to agent with token
+          const redirectUrl = `${callbackUrl}?success=true&token=${authToken}`;
+          window.location.href = redirectUrl;
+        } else {
+          setAuthSuccess(true);
+        }
+      }
+    };
+    
     if (token && isAuthenticated) {
       // Agent is requesting authentication with a token
-      handleAgentAuth(token);
+      handleAgentAuthInternal();
     } else if (redirect === 'agent') {
       // This is the callback after successful web login
-      handleWebLoginCallback();
+      handleWebLoginCallbackInternal();
     } else if (callbackUrl && isAuthenticated) {
       // Agent sent a callback URL and user is authenticated - auto redirect
-      initiateAgentLogin();
+      initiateAgentLoginInternal();
     } else {
       setLoading(false);
     }
   }, [searchParams, isAuthenticated]);
-
-  const handleAgentAuth = async (token: string) => {
-    // For agent auth, we just need to confirm the user is logged in
-    // and redirect back to agent with the auth token
-    if (isAuthenticated) {
-      const authToken = Cookies.get('token');
-      if (authToken) {
-        // Redirect back to agent with success
-        window.location.href = `skyport://auth?success=true&token=${authToken}`;
-        setAuthSuccess(true);
-      } else {
-        setError('No valid authentication token found');
-      }
-    } else {
-      setError('Please log in first');
-    }
-    setLoading(false);
-  };
-
-  const handleWebLoginCallback = () => {
-    if (isAuthenticated) {
-      setAuthSuccess(true);
-      // Close this window/tab after a short delay
-      setTimeout(() => {
-        window.close();
-      }, 2000);
-    }
-    setLoading(false);
-  };
 
   const initiateAgentLogin = () => {
     // Check if there's a callback URL for agent
@@ -194,5 +217,20 @@ export default function AgentAuthPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function AgentAuthPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <AgentAuthContent />
+    </Suspense>
   );
 }

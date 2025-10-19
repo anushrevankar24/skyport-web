@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const userData = await authAPI.getProfile();
         setUser(userData);
       }
-    } catch (error) {
+    } catch {
       // Token is invalid, clear cookies
       Cookies.remove('token');
       Cookies.remove('refreshToken');
@@ -50,8 +50,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       Cookies.set('user', JSON.stringify(response.user), { expires: 7 });
       
       setUser(response.user);
-    } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Login failed');
+    } catch (error) {
+      const errorMessage = error instanceof Error && 'response' in error 
+        ? (error as { response?: { data?: { error?: string } } }).response?.data?.error 
+        : undefined;
+      throw new Error(errorMessage || 'Login failed');
     }
   };
 
@@ -65,8 +68,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       Cookies.set('user', JSON.stringify(response.user), { expires: 7 });
       
       setUser(response.user);
-    } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Signup failed');
+    } catch (error) {
+      const errorMessage = error instanceof Error && 'response' in error 
+        ? (error as { response?: { data?: { error?: string } } }).response?.data?.error 
+        : undefined;
+      throw new Error(errorMessage || 'Signup failed');
     }
   };
 

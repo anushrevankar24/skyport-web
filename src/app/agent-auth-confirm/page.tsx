@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Cookies from 'js-cookie';
 
-export default function AgentAuthConfirmPage() {
+function AgentAuthConfirmContent() {
   const [confirming, setConfirming] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -13,7 +13,6 @@ export default function AgentAuthConfirmPage() {
   const { user, isAuthenticated } = useAuth();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callback');
-  const email = searchParams.get('email');
 
   useEffect(() => {
     if (!isAuthenticated || !callbackUrl) {
@@ -46,8 +45,8 @@ export default function AgentAuthConfirmPage() {
         window.location.href = redirectUrl;
       }, 1500);
       
-    } catch (err: any) {
-      setError(err.message || 'Failed to authenticate agent');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to authenticate agent');
       setConfirming(false);
     }
   };
@@ -151,6 +150,17 @@ export default function AgentAuthConfirmPage() {
   );
 }
 
-
-
-
+export default function AgentAuthConfirmPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <AgentAuthConfirmContent />
+    </Suspense>
+  );
+}

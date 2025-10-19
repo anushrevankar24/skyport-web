@@ -28,7 +28,7 @@ export default function DashboardPage() {
     try {
       const response = await tunnelsAPI.getTunnels();
       setTunnels(response.tunnels);
-    } catch (err: any) {
+    } catch {
       setError('Failed to load tunnels');
     } finally {
       setLoading(false);
@@ -40,7 +40,7 @@ export default function DashboardPage() {
     try {
       const response = await tunnelsAPI.getTunnels();
       setTunnels(response.tunnels);
-    } catch (err: any) {
+    } catch {
       setError('Failed to refresh tunnels');
     } finally {
       setRefreshing(false);
@@ -52,8 +52,11 @@ export default function DashboardPage() {
       const newTunnel = await tunnelsAPI.createTunnel({ name, subdomain, local_port: localPort });
       setTunnels([newTunnel, ...tunnels]);
       setShowCreateModal(false);
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to create tunnel');
+    } catch (err) {
+      const errorMessage = err instanceof Error && 'response' in err 
+        ? (err as { response?: { data?: { error?: string } } }).response?.data?.error 
+        : undefined;
+      setError(errorMessage || 'Failed to create tunnel');
     }
   };
 
@@ -63,7 +66,7 @@ export default function DashboardPage() {
     try {
       await tunnelsAPI.deleteTunnel(id);
       setTunnels(tunnels.filter(t => t.id !== id));
-    } catch (err: any) {
+    } catch {
       setError('Failed to delete tunnel');
     }
   };

@@ -1,17 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
 
-export default function AgentLoginPage() {
+function AgentLoginContent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
-  const { login, logout, user } = useAuth();
+  const { login, logout } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callback');
@@ -20,7 +20,7 @@ export default function AgentLoginPage() {
   useEffect(() => {
     // Force logout to ensure clean state for agent authentication
     logout();
-  }, []);
+  }, [logout]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,8 +36,8 @@ export default function AgentLoginPage() {
       } else {
         router.push('/dashboard');
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
@@ -121,7 +121,7 @@ export default function AgentLoginPage() {
 
           <div className="text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <Link 
                 href={callbackUrl ? `/signup?callback=${encodeURIComponent(callbackUrl)}` : '/signup'} 
                 className="font-medium text-indigo-600 hover:text-indigo-500"
@@ -148,6 +148,17 @@ export default function AgentLoginPage() {
   );
 }
 
-
-
-
+export default function AgentLoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <AgentLoginContent />
+    </Suspense>
+  );
+}
