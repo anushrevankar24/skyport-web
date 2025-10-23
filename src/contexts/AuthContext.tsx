@@ -45,15 +45,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await authAPI.login({ email, password });
       
-      // Store tokens and user data with explicit cookie options
+      // Store tokens and user data with industry-standard expiry (like ChatGPT, Google)
       const cookieOptions = { 
-        expires: 1, // 1 day
+        expires: 1, // 1 day for access token cookie
         sameSite: 'lax' as const,
         path: '/',
         secure: false // Allow on localhost HTTP
       };
       const longCookieOptions = {
-        expires: 7, // 7 days
+        expires: 30, // 30 days for refresh token (industry standard)
         sameSite: 'lax' as const,
         path: '/',
         secure: false // Allow on localhost HTTP
@@ -79,15 +79,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await authAPI.signup({ name, email, password });
       
-      // Store tokens and user data with explicit cookie options
+      // Store tokens and user data with industry-standard expiry (like ChatGPT, Google)
       const cookieOptions = { 
-        expires: 1, // 1 day
+        expires: 1, // 1 day for access token cookie
         sameSite: 'lax' as const,
         path: '/',
         secure: false // Allow on localhost HTTP
       };
       const longCookieOptions = {
-        expires: 7, // 7 days
+        expires: 30, // 30 days for refresh token (industry standard)
         sameSite: 'lax' as const,
         path: '/',
         secure: false // Allow on localhost HTTP

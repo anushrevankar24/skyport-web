@@ -17,7 +17,6 @@ function AgentLoginContent() {
 
   // Always start fresh for agent login
   useEffect(() => {
-    // Force logout to ensure clean state for agent authentication
     logout();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -34,7 +33,6 @@ function AgentLoginContent() {
         ? `/agent-auth-confirm?callback=${encodeURIComponent(callbackUrl)}&email=${encodeURIComponent(email)}`
         : '/dashboard';
       
-      // Use window.location.href for full page reload to ensure cookies are properly loaded
       window.location.href = redirectUrl;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -43,39 +41,63 @@ function AgentLoginContent() {
   };
   
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full">
+        {/* Logo and Title */}
+        <div className="text-center mb-8">
+          <Link href="/" className="inline-flex items-center justify-center space-x-2 mb-6">
+            <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <span className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              SkyPort
+            </span>
+          </Link>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">
             Connect SkyPort Agent
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Sign in to connect your SkyPort Agent to your account
+          <p className="text-gray-600">
+            Sign in to connect your agent to your account
           </p>
-          {callbackUrl && (
-            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-md">
-              <div className="flex">
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-blue-800">
-                    Agent Authentication Request
-                  </h3>
-                  <div className="mt-2 text-sm text-blue-700">
-                    <p>Your SkyPort Agent is requesting access to your account.</p>
-                  </div>
-                </div>
+        </div>
+
+        {/* Agent Request Info */}
+        {callbackUrl && (
+          <div className="mb-6 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 shadow-sm">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-blue-900 mb-1">
+                  Agent Authentication Request
+                </h3>
+                <p className="text-sm text-blue-700">
+                  Your SkyPort Agent is requesting access to your account. Sign in below to authorize.
+                </p>
               </div>
             </div>
-          )}
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative">
-              {error}
-            </div>
-          )}
-          <div className="rounded-md shadow-sm -space-y-px">
+          </div>
+        )}
+
+        {/* Form Card */}
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start shadow-sm">
+                <svg className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+                <span>{error}</span>
+              </div>
+            )}
+
             <div>
-              <label htmlFor="email" className="sr-only">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                 Email address
               </label>
               <input
@@ -84,14 +106,15 @@ function AgentLoginContent() {
                 type="email"
                 autoComplete="email"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-400"
+                placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
+
             <div>
-              <label htmlFor="password" className="sr-only">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                 Password
               </label>
               <input
@@ -100,48 +123,76 @@ function AgentLoginContent() {
                 type="password"
                 autoComplete="current-password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-400"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-          </div>
 
-          <div>
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-300"
+              className="w-full py-3 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              {loading ? 'Connecting Agent...' : 'Connect Agent to This Account'}
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Connecting Agent...
+                </span>
+              ) : (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  Connect Agent to This Account
+                </span>
+              )}
             </button>
-          </div>
+          </form>
 
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Don&apos;t have an account?{' '}
+          {/* Sign Up Link */}
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <p className="text-center text-sm text-gray-600">
+              Don't have an account?{' '}
               <Link 
                 href={callbackUrl ? `/signup?callback=${encodeURIComponent(callbackUrl)}` : '/signup'} 
-                className="font-medium text-indigo-600 hover:text-indigo-500"
+                className="font-semibold text-indigo-600 hover:text-purple-600 transition-colors"
               >
                 Create one here
               </Link>
             </p>
           </div>
+        </div>
 
-          {callbackUrl && (
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={() => window.close()}
-                className="text-sm text-gray-500 hover:text-gray-700"
-              >
-                Cancel and close window
-              </button>
+        {/* Cancel Option */}
+        {callbackUrl && (
+          <div className="mt-4 text-center">
+            <button
+              type="button"
+              onClick={() => window.close()}
+              className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              Cancel and close window
+            </button>
+          </div>
+        )}
+
+        {/* Info Section */}
+        <div className="mt-6 bg-indigo-50 border border-indigo-200 rounded-xl p-4">
+          <div className="flex gap-3">
+            <svg className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            <div className="text-sm text-indigo-800">
+              <p className="font-semibold mb-1">Secure Authentication</p>
+              <p>Your agent will receive a permanent token to access your tunnels. You can revoke access anytime from your dashboard.</p>
             </div>
-          )}
-        </form>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -150,7 +201,7 @@ function AgentLoginContent() {
 export default function AgentLoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
