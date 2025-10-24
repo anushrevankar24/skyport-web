@@ -23,7 +23,23 @@ export default function DashboardPage() {
       router.push('/login');
       return;
     }
+    
+    // Initial load
     loadTunnels();
+    
+    // Set up polling every 10 seconds for real-time updates
+    const pollInterval = setInterval(async () => {
+      try {
+        const response = await tunnelsAPI.getTunnels();
+        setTunnels(response.tunnels);
+      } catch {
+        // Silent fail on background refresh - don't show error to user
+        console.error('Background poll failed');
+      }
+    }, 10000);
+    
+    // Cleanup interval on unmount
+    return () => clearInterval(pollInterval);
   }, [isAuthenticated, router]);
 
   const loadTunnels = async () => {
