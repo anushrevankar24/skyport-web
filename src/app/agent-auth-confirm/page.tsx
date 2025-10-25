@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Cookies from 'js-cookie';
+import { authAPI } from '@/lib/api';
 
 function AgentAuthConfirmContent() {
   const [confirming, setConfirming] = useState(false);
@@ -32,13 +33,21 @@ function AgentAuthConfirmContent() {
     setConfirming(true);
     
     try {
-      const authToken = Cookies.get('token');
+      const browserToken = Cookies.get('token');
       
-      if (!authToken) {
+      if (!browserToken) {
         throw new Error('No authentication token found');
       }
 
-      const redirectUrl = `${callbackUrl}?success=true&token=${authToken}`;
+      // Exchange browser token for permanent agent service token
+      const data = await authAPI.agentAuth(browserToken);
+      const agentToken = data.agent_token;
+
+      if (!agentToken) {
+        throw new Error('No agent token received from server');
+      }
+
+      const redirectUrl = `${callbackUrl}?success=true&token=${agentToken}`;
       
       setSuccess(true);
       
@@ -239,7 +248,7 @@ function AgentAuthConfirmContent() {
             </svg>
             <div className="text-sm text-indigo-800">
               <p className="font-semibold mb-1">Permanent Token</p>
-              <p>Your agent will receive a permanent authentication token that never expires, similar to Cloudflare Tunnel or Ngrok.</p>
+              <p>Your agent will receive a permanent authentication token that never expires. You can revoke it anytime from your dashboard.</p>
             </div>
           </div>
         </div>

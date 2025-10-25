@@ -100,7 +100,7 @@ export const authAPI = {
     return response.data;
   },
 
-  agentAuth: async (token: string): Promise<{ valid: boolean; user: User }> => {
+  agentAuth: async (token: string): Promise<{ valid: boolean; user: User; agent_token: string }> => {
     const response = await api.post('/auth/agent-auth', { token });
     return response.data;
   },

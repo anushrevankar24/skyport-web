@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { tunnelsAPI, Tunnel } from '@/lib/api';
-import { Plus, Globe, Activity, Trash2, ExternalLink, RefreshCw } from 'lucide-react';
+import { Plus, Globe, Activity, Trash2, ExternalLink, RefreshCw, Menu, X, User, LogOut, BookOpen, LayoutDashboard, ChevronLeft, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 
 const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || 'localhost:8080';
 
@@ -14,6 +15,8 @@ export default function DashboardPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [error, setError] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
   const { user, logout, isAuthenticated } = useAuth();
   const router = useRouter();
@@ -101,38 +104,154 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-      {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-10 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex">
+      {/* Sidebar */}
+      <aside className={`fixed inset-y-0 left-0 z-50 bg-white shadow-2xl transform transition-all duration-300 ease-in-out ${
+        sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      } ${sidebarCollapsed ? 'lg:w-20' : 'lg:w-80'} ${!sidebarCollapsed && 'w-80'}`}>
+        <div className="flex flex-col h-full">
+          {/* Sidebar Header */}
+          <div className={`p-6 border-b border-gray-200 ${sidebarCollapsed ? 'lg:p-4' : ''}`}>
+            <div className={`flex items-center mb-6 ${sidebarCollapsed ? 'lg:justify-center lg:mb-4' : 'justify-between'}`}>
+              <div className={`flex items-center space-x-3 ${sidebarCollapsed ? 'lg:space-x-0' : ''}`}>
+                <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                {!sidebarCollapsed && (
+                  <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    SkyPort
+                  </h1>
+                )}
               </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                  SkyPort
-                </h1>
-                <p className="text-sm text-gray-600">Welcome back, {user?.name}</p>
+              <div className="flex items-center gap-2">
+                {/* Collapse Toggle (Desktop only) - Top placement like ChatGPT */}
+                <button
+                  onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                  className="hidden lg:flex p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  title={sidebarCollapsed ? 'Expand sidebar' : 'Close sidebar'}
+                >
+                  {sidebarCollapsed ? (
+                    <ChevronRight size={20} className="text-gray-700" />
+                  ) : (
+                    <ChevronLeft size={20} className="text-gray-700" />
+                  )}
+                </button>
+                {/* Mobile close button */}
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <X size={20} />
+                </button>
               </div>
             </div>
+
+            {/* Profile Section */}
+            {!sidebarCollapsed && (
+              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-4 border border-indigo-100">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full flex items-center justify-center">
+                    <User size={24} className="text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">{user?.name}</p>
+                    <p className="text-xs text-gray-600 truncate">{user?.email}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {sidebarCollapsed && (
+              <div className="hidden lg:flex justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full flex items-center justify-center">
+                  <User size={20} className="text-white" />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Sidebar Content */}
+          <div className="flex-1 overflow-y-auto p-6">
+            <nav className="space-y-2">
+              {/* Dashboard Link */}
+              <Link
+                href="/dashboard"
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg bg-indigo-50 text-indigo-700 font-medium ${
+                  sidebarCollapsed ? 'lg:justify-center' : ''
+                }`}
+                title="Dashboard"
+              >
+                <LayoutDashboard size={20} />
+                {!sidebarCollapsed && <span>Dashboard</span>}
+              </Link>
+
+              {/* Documentation Link */}
+              <Link
+                href="/docs"
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-50 text-gray-700 font-medium transition-colors ${
+                  sidebarCollapsed ? 'lg:justify-center' : ''
+                }`}
+                title="Documentation"
+              >
+                <BookOpen size={20} />
+                {!sidebarCollapsed && <span>Documentation</span>}
+              </Link>
+            </nav>
+          </div>
+
+          {/* Sidebar Footer - Sign Out */}
+          <div className={`p-6 border-t border-gray-200 ${sidebarCollapsed ? 'lg:p-4' : ''}`}>
             <button
               onClick={logout}
-              className="px-4 py-2 text-gray-700 hover:text-indigo-600 font-medium transition-colors flex items-center gap-2"
+              className={`w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all ${
+                sidebarCollapsed ? 'lg:px-2' : ''
+              }`}
+              title="Sign Out"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              Sign Out
+              <LogOut size={20} />
+              {!sidebarCollapsed && <span>Sign Out</span>}
             </button>
           </div>
         </div>
-      </div>
+      </aside>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Overlay for mobile */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Main Content */}
+      <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${
+        sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-80'
+      }`}>
+        {/* Top Bar */}
+        <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+          <div className="px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between py-4">
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setSidebarOpen(true)}
+                  className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <Menu size={24} />
+                </button>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
+                  <p className="text-sm text-gray-600">Welcome back, {user?.name}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content Area */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-start shadow-sm">
             <svg className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -298,29 +417,6 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Agent Instructions */}
-        <div className="mt-8 bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-200 rounded-2xl p-8 shadow-lg">
-          <div className="flex items-start gap-4">
-            <div className="w-14 h-14 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Connect with SkyPort Agent</h3>
-              <p className="text-gray-700 mb-4">
-                Download and install the SkyPort Agent on your computer, then sign in with your account to manage these tunnels.
-              </p>
-              <a 
-                href="/agent-auth" 
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-                Agent Authentication
-              </a>
-            </div>
           </div>
         </div>
       </div>

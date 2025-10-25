@@ -98,7 +98,7 @@ export const RESERVED_SUBDOMAINS = [
 
   // Cloud & Infrastructure
   'cloud', 'aws', 'azure', 'gcp', 'digitalocean',
-  'heroku', 'vercel', 'netlify', 'cloudflare',
+  'heroku', 'vercel', 'netlify',
   'kubernetes', 'k8s', 'docker', 'container', 'containers',
 
   // User-facing features (future)
