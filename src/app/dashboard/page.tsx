@@ -13,6 +13,7 @@ export default function DashboardPage() {
   const [tunnels, setTunnels] = useState<Tunnel[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showSignOutModal, setShowSignOutModal] = useState(false);
   const [error, setError] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -73,11 +74,13 @@ export default function DashboardPage() {
       const newTunnel = await tunnelsAPI.createTunnel({ name, subdomain, local_port: localPort });
       setTunnels([newTunnel, ...tunnels]);
       setShowCreateModal(false);
+      setError(''); // Clear any existing errors on success
     } catch (err) {
       const errorMessage = err instanceof Error && 'response' in err 
         ? (err as { response?: { data?: { error?: string } } }).response?.data?.error 
         : undefined;
-      setError(errorMessage || 'Failed to create tunnel');
+      // Throw the error so the modal can catch it
+      throw new Error(errorMessage || 'Failed to create tunnel');
     }
   };
 
@@ -112,9 +115,9 @@ export default function DashboardPage() {
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
           <div className={`p-6 border-b border-gray-200 ${sidebarCollapsed ? 'lg:p-4' : ''}`}>
-            <div className={`flex items-center mb-6 ${sidebarCollapsed ? 'lg:justify-center lg:mb-4' : 'justify-between'}`}>
+            <div className={`flex items-center mb-6 ${sidebarCollapsed ? 'lg:justify-center' : 'justify-between'}`}>
               <div className={`flex items-center space-x-3 ${sidebarCollapsed ? 'lg:space-x-0' : ''}`}>
-                <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
@@ -125,7 +128,7 @@ export default function DashboardPage() {
                   </h1>
                 )}
               </div>
-              <div className="flex items-center gap-2">
+              <div className={`flex items-center gap-2 ${sidebarCollapsed ? 'lg:hidden' : ''}`}>
                 {/* Collapse Toggle (Desktop only) - Top placement like ChatGPT */}
                 <button
                   onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
@@ -147,12 +150,25 @@ export default function DashboardPage() {
                 </button>
               </div>
             </div>
+            
+            {/* Collapse toggle for collapsed state - positioned below logo */}
+            {sidebarCollapsed && (
+              <div className="hidden lg:flex justify-center mb-4">
+                <button
+                  onClick={() => setSidebarCollapsed(false)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  title="Expand sidebar"
+                >
+                  <ChevronRight size={20} className="text-gray-700" />
+                </button>
+              </div>
+            )}
 
             {/* Profile Section */}
             {!sidebarCollapsed && (
-              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-4 border border-indigo-100">
+              <div className="mt-6 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-4 border border-indigo-100">
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
                     <User size={24} className="text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -164,7 +180,7 @@ export default function DashboardPage() {
             )}
 
             {sidebarCollapsed && (
-              <div className="hidden lg:flex justify-center">
+              <div className="hidden lg:flex justify-center mt-6">
                 <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full flex items-center justify-center">
                   <User size={20} className="text-white" />
                 </div>
@@ -204,7 +220,7 @@ export default function DashboardPage() {
           {/* Sidebar Footer - Sign Out */}
           <div className={`p-6 border-t border-gray-200 ${sidebarCollapsed ? 'lg:p-4' : ''}`}>
             <button
-              onClick={logout}
+              onClick={() => setShowSignOutModal(true)}
               className={`w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all ${
                 sidebarCollapsed ? 'lg:px-2' : ''
               }`}
@@ -252,15 +268,6 @@ export default function DashboardPage() {
         {/* Main Content Area */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-start shadow-sm">
-            <svg className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-            </svg>
-            <span className="flex-1">{error}</span>
-            <button onClick={() => setError('')} className="ml-4 text-red-800 hover:text-red-900 font-bold">×</button>
-          </div>
-        )}
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -385,6 +392,18 @@ export default function DashboardPage() {
                           <span>Port {tunnel.local_port}</span>
                         </div>
 
+                        {/* Created Date */}
+                        <div className="inline-flex items-center gap-1.5 px-3 py-2 bg-blue-50 rounded-lg text-blue-700">
+                          <span className="font-medium">Created:</span>
+                          <span>{new Date(tunnel.created_at).toLocaleString('en-US', { 
+                            month: 'short', 
+                            day: 'numeric',
+                            year: 'numeric',
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          })}</span>
+                        </div>
+
                         {/* Last Seen */}
                         {tunnel.last_seen && (
                           <div className="inline-flex items-center gap-1.5 px-3 py-2 bg-gray-100 rounded-lg text-gray-600">
@@ -426,7 +445,44 @@ export default function DashboardPage() {
         <CreateTunnelModal 
           onClose={() => setShowCreateModal(false)}
           onCreate={handleCreateTunnel}
+          existingTunnels={tunnels}
         />
+      )}
+
+      {/* Sign Out Confirmation Modal */}
+      {showSignOutModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl border border-gray-200 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-xl flex items-center justify-center">
+                <LogOut size={24} className="text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900">Sign Out</h3>
+            </div>
+            
+            <p className="text-gray-600 mb-8 text-lg">
+              Are you sure you want to sign out of your account?
+            </p>
+            
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowSignOutModal(false)}
+                className="flex-1 px-6 py-3 border-2 border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 hover:border-gray-400 transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setShowSignOutModal(false);
+                  logout();
+                }}
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
+              >
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
@@ -435,21 +491,24 @@ export default function DashboardPage() {
 interface CreateTunnelModalProps {
   onClose: () => void;
   onCreate: (name: string, subdomain: string, localPort: number) => void;
+  existingTunnels: Tunnel[];
 }
 
-function CreateTunnelModal({ onClose, onCreate }: CreateTunnelModalProps) {
+function CreateTunnelModal({ onClose, onCreate, existingTunnels }: CreateTunnelModalProps) {
   const [name, setName] = useState('');
   const [subdomain, setSubdomain] = useState('');
-  const [localPort, setLocalPort] = useState(3000);
+  const [localPort, setLocalPort] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [subdomainError, setSubdomainError] = useState<string | null>(null);
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [portError, setPortError] = useState<string | null>(null);
 
   const handleSubdomainChange = (value: string) => {
     // Convert to lowercase and remove invalid characters
     const cleanValue = value.toLowerCase().replace(/[^a-z0-9-]/g, '');
     setSubdomain(cleanValue);
     
-    // Clear error when user starts typing
+    // Clear subdomain error when user starts typing
     if (subdomainError) {
       setSubdomainError(null);
     }
@@ -457,6 +516,27 @@ function CreateTunnelModal({ onClose, onCreate }: CreateTunnelModalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Clear previous errors
+    setNameError(null);
+    setPortError(null);
+    setSubdomainError(null);
+    
+    // Check if tunnel name already exists
+    const nameExists = existingTunnels.some(
+      tunnel => tunnel.name.toLowerCase() === name.trim().toLowerCase()
+    );
+    if (nameExists) {
+      setNameError('A tunnel with this name already exists');
+      return;
+    }
+    
+    // Validate port number
+    const portNumber = parseInt(localPort);
+    if (!localPort || isNaN(portNumber) || portNumber < 1 || portNumber > 65535) {
+      setPortError('Please enter a valid port number between 1 and 65535');
+      return;
+    }
     
     // Validate subdomain before submission
     const { validateSubdomain } = await import('@/lib/validation');
@@ -469,73 +549,100 @@ function CreateTunnelModal({ onClose, onCreate }: CreateTunnelModalProps) {
     
     setLoading(true);
     try {
-      await onCreate(name, subdomain, localPort);
-    } finally {
+      await onCreate(name, subdomain, portNumber);
+    } catch (err) {
+      // Parse server error to determine which field it relates to
+      const errorMessage = err instanceof Error ? err.message : 'Failed to create tunnel';
+      if (errorMessage.toLowerCase().includes('subdomain')) {
+        setSubdomainError(errorMessage);
+      } else if (errorMessage.toLowerCase().includes('name')) {
+        setNameError(errorMessage);
+      } else if (errorMessage.toLowerCase().includes('port')) {
+        setPortError(errorMessage);
+      } else {
+        // If we can't determine the field, show it under subdomain as it's most common
+        setSubdomainError(errorMessage);
+      }
       setLoading(false);
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl max-w-lg w-full p-8 shadow-2xl border border-gray-200 animate-in zoom-in-95 duration-200">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
-            <Plus size={24} className="text-white" />
+      <div className="bg-white rounded-2xl max-w-2xl w-full p-10 shadow-2xl border border-gray-200 animate-in zoom-in-95 duration-200">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="w-14 h-14 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
+            <Plus size={28} className="text-white" />
           </div>
-          <h3 className="text-2xl font-bold text-gray-900">Create New Tunnel</h3>
+          <h3 className="text-3xl font-bold text-gray-900">Create New Tunnel</h3>
         </div>
         
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-base font-semibold text-gray-700 mb-2">
               Tunnel Name
             </label>
             <input
               type="text"
               required
               value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-400 transition-all"
+              onChange={(e) => {
+                setName(e.target.value);
+                if (nameError) setNameError(null);
+              }}
+              className={`w-full px-4 py-3.5 border rounded-lg focus:outline-none focus:ring-2 text-base ${
+                nameError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-indigo-500'
+              } focus:border-transparent bg-white text-gray-900 placeholder-gray-400 transition-all`}
               placeholder="My Web App"
             />
+            {nameError && (
+              <p className="mt-2 text-sm text-red-600 flex items-center gap-1.5">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                {nameError}
+              </p>
+            )}
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-base font-semibold text-gray-700 mb-2">
               Subdomain
             </label>
-            <div className="flex rounded-lg overflow-hidden border border-gray-300 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-transparent transition-all">
+            <div className={`flex rounded-lg overflow-hidden border transition-all ${
+              subdomainError 
+                ? 'border-red-500 focus-within:ring-2 focus-within:ring-red-500' 
+                : 'border-gray-300 focus-within:ring-2 focus-within:ring-indigo-500'
+            } focus-within:border-transparent`}>
               <input
                 type="text"
                 required
                 value={subdomain}
                 onChange={(e) => handleSubdomainChange(e.target.value)}
-                className={`flex-1 px-4 py-3 focus:outline-none bg-white text-gray-900 placeholder-gray-400 ${
-                  subdomainError ? 'border-red-500' : ''
-                }`}
+                className="flex-1 px-4 py-3.5 focus:outline-none bg-white text-gray-900 placeholder-gray-400 text-base"
                 placeholder="myapp"
                 minLength={3}
                 maxLength={63}
               />
-              <span className="px-4 py-3 bg-gradient-to-br from-gray-50 to-gray-100 text-gray-600 font-medium border-l border-gray-300">
+              <span className="px-4 py-3.5 bg-gradient-to-br from-gray-50 to-gray-100 text-gray-600 font-medium border-l border-gray-300 text-base">
                 .{DOMAIN}
               </span>
             </div>
             {subdomainError && (
-              <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+              <p className="mt-2 text-sm text-red-600 flex items-center gap-1.5">
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                 </svg>
                 {subdomainError}
               </p>
             )}
-            <p className="mt-2 text-xs text-gray-500">
+            <p className="mt-2 text-sm text-gray-500">
               Use lowercase letters, numbers, and hyphens only (3-63 characters)
             </p>
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-base font-semibold text-gray-700 mb-2">
               Local Port
             </label>
             <input
@@ -544,27 +651,42 @@ function CreateTunnelModal({ onClose, onCreate }: CreateTunnelModalProps) {
               min="1"
               max="65535"
               value={localPort}
-              onChange={(e) => setLocalPort(parseInt(e.target.value))}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white text-gray-900 transition-all"
-              placeholder="3000"
+              onChange={(e) => {
+                setLocalPort(e.target.value);
+                if (portError) setPortError(null);
+              }}
+              className={`w-full px-4 py-3.5 border rounded-lg focus:outline-none focus:ring-2 text-base ${
+                portError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-indigo-500'
+              } focus:border-transparent bg-white text-gray-900 placeholder-gray-400 transition-all`}
+              placeholder="e.g., 3000"
             />
-            <p className="mt-2 text-xs text-gray-500">
-              Port number where your local service is running (1-65535)
-            </p>
+            {portError && (
+              <p className="mt-2 text-sm text-red-600 flex items-center gap-1.5">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                {portError}
+              </p>
+            )}
+            {!portError && (
+              <p className="mt-2 text-sm text-gray-500">
+                Port number where your local service is running (1-65535)
+              </p>
+            )}
           </div>
           
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-4 pt-6">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-6 py-3 border-2 border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 hover:border-gray-400 transition-all"
+              className="flex-1 px-6 py-3.5 border-2 border-gray-300 rounded-lg text-gray-700 text-base font-semibold hover:bg-gray-50 hover:border-gray-400 transition-all"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="flex-1 px-6 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg text-base font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">

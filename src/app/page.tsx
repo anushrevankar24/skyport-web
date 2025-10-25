@@ -53,7 +53,7 @@ export default function Home() {
       <div className="container mx-auto px-6 pt-20 pb-32">
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-block mb-6 px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full text-sm font-semibold">
-            🚀 Secure Tunnel Management
+            Secure Tunnel Management
           </div>
           <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight">
             <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
@@ -144,26 +144,6 @@ export default function Home() {
                 Track connection status, health metrics, and performance in real-time with our dashboard.
               </p>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* CTA Section */}
-      <div className="container mx-auto px-6 pb-32">
-        <div className="max-w-4xl mx-auto bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl p-12 text-center shadow-2xl">
-          <h2 className="text-4xl font-bold text-white mb-4">
-            Ready to get started?
-          </h2>
-          <p className="text-xl text-indigo-100 mb-8">
-            Join thousands of developers using SkyPort for their tunnel management
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link href="/signup" className="w-full sm:w-auto px-8 py-4 bg-white text-indigo-600 rounded-lg font-semibold text-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">
-              Create Account
-            </Link>
-            <Link href="/login" className="w-full sm:w-auto px-8 py-4 bg-transparent text-white rounded-lg font-semibold text-lg border-2 border-white hover:bg-white hover:text-indigo-600 transition-all">
-              Sign In
-            </Link>
           </div>
         </div>
       </div>

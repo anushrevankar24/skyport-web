@@ -151,7 +151,7 @@ export default function DocsPage() {
 
             {/* Profile Section */}
             {!sidebarCollapsed && (
-              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-4 border border-indigo-100">
+              <div className="mt-6 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-4 border border-indigo-100">
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full flex items-center justify-center">
                     <User size={24} className="text-white" />
@@ -299,8 +299,8 @@ export default function DocsPage() {
 
                 <div className="prose prose-lg max-w-none space-y-6">
                   <p className="text-gray-700 leading-relaxed">
-                    SkyPort is a secure tunnel service that allows you to expose your local services to the internet through encrypted tunnels. 
-                    Think of it as your personal gateway to share local applications, APIs, and websites without deploying them.
+                    SkyPort is an enterprise-grade secure tunneling service that enables you to expose local services to the internet through encrypted connections. 
+                    This solution provides a professional gateway to share local applications, APIs, and services without requiring full deployment infrastructure.
                   </p>
 
                   <div className="grid md:grid-cols-3 gap-4 my-8">
@@ -324,8 +324,8 @@ export default function DocsPage() {
                       <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mb-4">
                         <Settings size={24} className="text-white" />
                       </div>
-                      <h3 className="font-bold text-gray-900 mb-2">Easy Setup</h3>
-                      <p className="text-sm text-gray-600">Get started in minutes with our automated installers</p>
+                      <h3 className="font-bold text-gray-900 mb-2">Streamlined Setup</h3>
+                      <p className="text-sm text-gray-600">Quick deployment with automated installation process</p>
                     </div>
                   </div>
 
@@ -333,19 +333,19 @@ export default function DocsPage() {
                   <ul className="space-y-2">
                     <li className="flex items-start gap-3">
                       <ArrowRight size={20} className="text-indigo-600 mt-1 flex-shrink-0" />
-                      <span className="text-gray-700"><strong>Web Development:</strong> Share your local development server with clients or team members</span>
+                      <span className="text-gray-700"><strong>Web Development:</strong> Securely share local development environments with clients and team members</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <ArrowRight size={20} className="text-indigo-600 mt-1 flex-shrink-0" />
-                      <span className="text-gray-700"><strong>API Testing:</strong> Test webhooks and APIs without deploying</span>
+                      <span className="text-gray-700"><strong>API Testing:</strong> Test webhooks and API integrations without production deployment</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <ArrowRight size={20} className="text-indigo-600 mt-1 flex-shrink-0" />
-                      <span className="text-gray-700"><strong>Demos:</strong> Showcase your projects running on localhost</span>
+                      <span className="text-gray-700"><strong>Demonstrations:</strong> Present projects and prototypes running on local infrastructure</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <ArrowRight size={20} className="text-indigo-600 mt-1 flex-shrink-0" />
-                      <span className="text-gray-700"><strong>IoT Devices:</strong> Access your home server or IoT devices remotely</span>
+                      <span className="text-gray-700"><strong>IoT Devices:</strong> Establish secure remote access to local servers and IoT infrastructure</span>
                     </li>
                   </ul>
                 </div>
@@ -393,12 +393,12 @@ export default function DocsPage() {
                   </div>
 
                   <Note>
-                    <p><strong>Note:</strong> The installer will automatically download the appropriate binary for your system and install it to your PATH.</p>
+                    <p><strong>Note:</strong> The installer automatically downloads the appropriate binary for your system architecture and configures the PATH environment variable.</p>
                   </Note>
 
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 mb-4">Manual Installation</h3>
-                    <p className="text-gray-700 mb-4">If the automated scripts don&apos;t work, you can download binaries manually:</p>
+                    <p className="text-gray-700 mb-4">For environments where automated installation is not feasible, binaries can be downloaded manually:</p>
                     
                     <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 space-y-3">
                       <p className="font-semibold text-gray-900">1. Download the binary for your platform:</p>
@@ -431,12 +431,12 @@ export PATH="$HOME/.local/bin:$PATH"`}
 
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 mb-4">Verify Installation</h3>
-                    <p className="text-gray-700 mb-4">Check that SkyPort is installed correctly:</p>
+                    <p className="text-gray-700 mb-4">Verify the installation was successful:</p>
                     <CodeBlock
                       id="verify-install"
                       code="skyport --version"
                     />
-                    <p className="text-sm text-gray-600 mt-3">You should see the version number printed to the console.</p>
+                    <p className="text-sm text-gray-600 mt-3">The command will display the installed version number.</p>
                   </div>
                 </div>
               </div>
@@ -457,7 +457,7 @@ export PATH="$HOME/.local/bin:$PATH"`}
 
                 <div className="space-y-6">
                   <p className="text-gray-700">
-                    Before you can start using SkyPort Agent, you need to authenticate it with your SkyPort account.
+                    Before using SkyPort Agent, authentication with your SkyPort account is required to establish secure connectivity.
                   </p>
 
                   <div>
@@ -469,12 +469,12 @@ export PATH="$HOME/.local/bin:$PATH"`}
                   </div>
 
                   <Note>
-                    <p><strong>What happens when you run this command:</strong></p>
+                    <p><strong>Authentication Process:</strong></p>
                     <ol className="mt-2 ml-4 space-y-1">
-                      <li>1. Your default browser will open automatically</li>
-                      <li>2. You&apos;ll be asked to log in to your SkyPort account</li>
-                      <li>3. After successful login, you&apos;ll be redirected back</li>
-                      <li>4. Your credentials are securely stored locally</li>
+                      <li>1. Your default browser will launch automatically</li>
+                      <li>2. You will be prompted to authenticate with your SkyPort account</li>
+                      <li>3. Upon successful authentication, the browser will redirect back to the agent</li>
+                      <li>4. Authentication credentials are securely stored in the local configuration</li>
                     </ol>
                   </Note>
 
@@ -494,7 +494,7 @@ export PATH="$HOME/.local/bin:$PATH"`}
                   </div>
 
                   <Warning>
-                    <p><strong>Security Note:</strong> Your authentication tokens are stored locally and should be kept secure. Never share your configuration directory with others.</p>
+                    <p><strong>Security Notice:</strong> Authentication tokens are stored locally in the configuration directory. Maintain appropriate file system permissions and do not share the configuration directory with unauthorized parties.</p>
                   </Warning>
                 </div>
               </div>
@@ -520,21 +520,21 @@ export PATH="$HOME/.local/bin:$PATH"`}
                       Create a Tunnel in Dashboard
                     </h3>
                     <p className="text-gray-700 mb-3">
-                      First, create a tunnel configuration in your <Link href="/dashboard" className="text-indigo-600 hover:text-indigo-700 font-medium underline">dashboard</Link>. 
-                      You&apos;ll need to provide:
+                      Begin by creating a tunnel configuration in the <Link href="/dashboard" className="text-indigo-600 hover:text-indigo-700 font-medium underline">dashboard</Link>. 
+                      The following parameters are required:
                     </p>
                     <ul className="space-y-2 text-gray-700 ml-6">
                       <li className="flex items-start gap-2">
                         <ArrowRight size={18} className="text-indigo-600 mt-1 flex-shrink-0" />
-                        <span><strong>Tunnel Name:</strong> A friendly name for your tunnel (e.g., &quot;My Web App&quot;)</span>
+                        <span><strong>Tunnel Name:</strong> A descriptive identifier for your tunnel (e.g., &quot;Production Web Service&quot;)</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <ArrowRight size={18} className="text-indigo-600 mt-1 flex-shrink-0" />
-                        <span><strong>Subdomain:</strong> Your unique subdomain (e.g., &quot;myapp&quot; → myapp.skyports.tech)</span>
+                        <span><strong>Subdomain:</strong> Your unique subdomain identifier (e.g., &quot;myapp&quot; resolves to myapp.skyports.tech)</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <ArrowRight size={18} className="text-indigo-600 mt-1 flex-shrink-0" />
-                        <span><strong>Local Port:</strong> The port your application is running on (e.g., 3000, 8080)</span>
+                        <span><strong>Local Port:</strong> The local port number where your service is listening (e.g., 3000, 8080)</span>
                       </li>
                     </ul>
                   </div>
@@ -544,7 +544,7 @@ export PATH="$HOME/.local/bin:$PATH"`}
                       <span className="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center text-sm">2</span>
                       Start Your Local Service
                     </h3>
-                    <p className="text-gray-700 mb-3">Make sure your application is running locally. For example:</p>
+                    <p className="text-gray-700 mb-3">Ensure your application is running on the configured local port. Example commands:</p>
                     <CodeBlock
                       id="start-service"
                       code={`# Node.js/Next.js
@@ -568,7 +568,7 @@ php -S localhost:8000`}
                       id="list-tunnels"
                       code="skyport tunnel list"
                     />
-                    <p className="text-sm text-gray-600 mt-3">This will show all tunnels you&apos;ve created in the dashboard.</p>
+                    <p className="text-sm text-gray-600 mt-3">This command displays all configured tunnels from the dashboard.</p>
                   </div>
 
                   <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200">
@@ -576,7 +576,7 @@ php -S localhost:8000`}
                       <span className="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center text-sm">4</span>
                       Start the Tunnel
                     </h3>
-                    <p className="text-gray-700 mb-3">Start your tunnel using the tunnel name:</p>
+                    <p className="text-gray-700 mb-3">Initiate the tunnel connection using the configured tunnel name:</p>
                     <CodeBlock
                       id="start-tunnel"
                       code="skyport tunnel run my-web-app"
@@ -587,10 +587,10 @@ php -S localhost:8000`}
                   </div>
 
                   <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border-2 border-green-300">
-                    <h3 className="text-lg font-bold text-green-900 mb-3">🎉 You&apos;re All Set!</h3>
+                    <h3 className="text-lg font-bold text-green-900 mb-3">Setup Complete</h3>
                     <p className="text-green-800">
                       Your tunnel is now active and routing traffic from the internet to your local service. 
-                      Visit your tunnel URL in a browser or share it with others!
+                      Visit your tunnel URL in a browser or share it with others.
                     </p>
                   </div>
                 </div>
@@ -615,12 +615,12 @@ php -S localhost:8000`}
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 mb-4">Core Commands</h3>
                     <div className="space-y-4">
-                      <div className="border border-gray-200 rounded-lg overflow-hidden">
+                        <div className="border border-gray-200 rounded-lg overflow-hidden">
                         <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
                           <code className="text-indigo-600 font-mono font-semibold">skyport login</code>
                         </div>
                         <div className="px-4 py-3">
-                          <p className="text-gray-700">Authenticate with your SkyPort account. Opens browser for OAuth login.</p>
+                          <p className="text-gray-700">Authenticate with your SkyPort account through OAuth browser-based authentication.</p>
                         </div>
                       </div>
 
@@ -629,7 +629,7 @@ php -S localhost:8000`}
                           <code className="text-indigo-600 font-mono font-semibold">skyport status</code>
                         </div>
                         <div className="px-4 py-3">
-                          <p className="text-gray-700">Show current status of the agent and all active tunnels.</p>
+                          <p className="text-gray-700">Display current agent status and connection state for all configured tunnels.</p>
                         </div>
                       </div>
 
@@ -638,7 +638,7 @@ php -S localhost:8000`}
                           <code className="text-indigo-600 font-mono font-semibold">skyport --help</code>
                         </div>
                         <div className="px-4 py-3">
-                          <p className="text-gray-700">Display help information and list all available commands.</p>
+                          <p className="text-gray-700">Display comprehensive command reference and usage information.</p>
                         </div>
                       </div>
 
@@ -647,7 +647,7 @@ php -S localhost:8000`}
                           <code className="text-indigo-600 font-mono font-semibold">skyport --version</code>
                         </div>
                         <div className="px-4 py-3">
-                          <p className="text-gray-700">Display the current version of SkyPort Agent.</p>
+                          <p className="text-gray-700">Display the installed version of SkyPort Agent.</p>
                         </div>
                       </div>
                     </div>
@@ -662,7 +662,7 @@ php -S localhost:8000`}
                           <code className="text-indigo-600 font-mono font-semibold">skyport tunnel list</code>
                         </div>
                         <div className="px-4 py-3">
-                          <p className="text-gray-700 mb-2">List all your configured tunnels.</p>
+                          <p className="text-gray-700 mb-2">Display all configured tunnel instances with current status.</p>
                           <div className="mt-2">
                             <CodeBlock
                               id="cmd-tunnel-list"
@@ -683,7 +683,7 @@ php -S localhost:8000`}
                           <code className="text-indigo-600 font-mono font-semibold">skyport tunnel run &lt;name&gt;</code>
                         </div>
                         <div className="px-4 py-3">
-                          <p className="text-gray-700 mb-2">Start a tunnel by name.</p>
+                          <p className="text-gray-700 mb-2">Initiate a tunnel connection by the specified tunnel identifier.</p>
                           <div className="mt-2">
                             <CodeBlock
                               id="cmd-tunnel-run"
@@ -701,7 +701,7 @@ skyport tunnel run my-web-app --background`}
                           <code className="text-indigo-600 font-mono font-semibold">skyport tunnel stop &lt;name&gt;</code>
                         </div>
                         <div className="px-4 py-3">
-                          <p className="text-gray-700 mb-2">Stop a running tunnel.</p>
+                          <p className="text-gray-700 mb-2">Terminate an active tunnel connection.</p>
                           <div className="mt-2">
                             <CodeBlock
                               id="cmd-tunnel-stop"
@@ -716,7 +716,7 @@ skyport tunnel run my-web-app --background`}
                           <code className="text-indigo-600 font-mono font-semibold">skyport tunnel info &lt;name&gt;</code>
                         </div>
                         <div className="px-4 py-3">
-                          <p className="text-gray-700">Display detailed information about a specific tunnel.</p>
+                          <p className="text-gray-700">Display comprehensive information and metrics for a specified tunnel instance.</p>
                         </div>
                       </div>
                     </div>
@@ -744,7 +744,7 @@ skyport tunnel run my-web-app --background`}
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 mb-4">Background Mode</h3>
                     <p className="text-gray-700 mb-4">
-                      Run tunnels in the background without keeping a terminal window open:
+                      Execute tunnels as background processes without maintaining an active terminal session:
                     </p>
                     <CodeBlock
                       id="background-mode"
@@ -763,7 +763,7 @@ skyport tunnel stop my-app`}
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 mb-4">Running Multiple Tunnels</h3>
                     <p className="text-gray-700 mb-4">
-                      You can run multiple tunnels simultaneously, each exposing a different local port:
+                      Multiple tunnel instances can be executed concurrently, each exposing distinct local ports:
                     </p>
                     <CodeBlock
                       id="multiple-tunnels"
@@ -801,7 +801,7 @@ skyport status`}
                 <div className="space-y-8">
                   {/* Command Not Found */}
                   <div className="border-l-4 border-amber-500 bg-amber-50 rounded-r-lg p-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-3">❌ Command not found: skyport</h3>
+                    <h3 className="text-lg font-bold text-gray-900 mb-3">Error: Command not found: skyport</h3>
                     <p className="text-gray-700 mb-4"><strong>Solution:</strong></p>
                     <div className="space-y-3">
                       <div>
@@ -832,7 +832,7 @@ source ~/.bashrc`}
 
                   {/* Permission Denied */}
                   <div className="border-l-4 border-amber-500 bg-amber-50 rounded-r-lg p-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-3">❌ Permission denied</h3>
+                    <h3 className="text-lg font-bold text-gray-900 mb-3">Error: Permission denied</h3>
                     <p className="text-gray-700 mb-4"><strong>Solution:</strong></p>
                     <CodeBlock
                       id="fix-permissions"
@@ -846,7 +846,7 @@ curl -fsSL https://raw.githubusercontent.com/anushrevankar24/skyport-agent/main/
 
                   {/* Connection Issues */}
                   <div className="border-l-4 border-amber-500 bg-amber-50 rounded-r-lg p-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-3">❌ Connection failed / Tunnel not working</h3>
+                    <h3 className="text-lg font-bold text-gray-900 mb-3">Error: Connection failed / Tunnel not working</h3>
                     <p className="text-gray-700 mb-4"><strong>Check these common issues:</strong></p>
                     <ul className="space-y-3 text-gray-700">
                       <li className="flex items-start gap-3">
@@ -890,10 +890,10 @@ curl -fsSL https://raw.githubusercontent.com/anushrevankar24/skyport-agent/main/
 
                   {/* Authentication Issues */}
                   <div className="border-l-4 border-amber-500 bg-amber-50 rounded-r-lg p-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-3">❌ Authentication failed</h3>
+                    <h3 className="text-lg font-bold text-gray-900 mb-3">Error: Authentication failed</h3>
                     <p className="text-gray-700 mb-4"><strong>Solution:</strong></p>
                     <ol className="space-y-2 text-gray-700 ml-4">
-                      <li>1. Try logging out and back in:</li>
+                      <li>1. Clear existing credentials and re-authenticate:</li>
                     </ol>
                     <div className="mt-2">
                       <CodeBlock
@@ -909,9 +909,9 @@ skyport login`}
 
                   {/* Port Already in Use */}
                   <div className="border-l-4 border-amber-500 bg-amber-50 rounded-r-lg p-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-3">❌ Port already in use</h3>
+                    <h3 className="text-lg font-bold text-gray-900 mb-3">Error: Port already in use</h3>
                     <p className="text-gray-700 mb-4"><strong>Solution:</strong></p>
-                    <p className="text-gray-700 mb-2">Find what&apos;s using the port:</p>
+                    <p className="text-gray-700 mb-2">Identify the process occupying the port:</p>
                     <CodeBlock
                       id="find-port"
                       code={`# Linux/macOS
@@ -920,12 +920,12 @@ lsof -i :3000
 # Windows
 netstat -ano | findstr :3000`}
                     />
-                    <p className="text-gray-700 mt-3">Either stop that process or use a different port in your tunnel configuration.</p>
+                    <p className="text-gray-700 mt-3">Terminate the conflicting process or reconfigure the tunnel to use an available port.</p>
                   </div>
 
                   {/* Uninstall */}
                   <div className="border-l-4 border-red-500 bg-red-50 rounded-r-lg p-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-3">🗑️ Uninstalling SkyPort</h3>
+                    <h3 className="text-lg font-bold text-gray-900 mb-3">Uninstalling SkyPort</h3>
                     <p className="text-gray-700 mb-4">To completely remove SkyPort from your system:</p>
                     <div className="space-y-3">
                       <div>
@@ -964,9 +964,9 @@ Remove-Item "$env:LOCALAPPDATA\\SkyPort" -Recurse
 
             {/* Need More Help */}
             <div className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-2xl p-8 text-center text-white">
-              <h2 className="text-2xl font-bold mb-4">Need More Help?</h2>
+              <h2 className="text-2xl font-bold mb-4">Additional Support</h2>
               <p className="text-indigo-100 mb-6 max-w-2xl mx-auto">
-                If you&apos;re still experiencing issues or have questions, we&apos;re here to help!
+                For further assistance or technical inquiries, our support team is available to help.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
